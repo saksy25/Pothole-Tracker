@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <!-- Basic -->
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <!-- Mobile Metas -->
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+  <!-- Site Metas -->
+  <meta name="keywords" content="" />
+  <meta name="description" content="" />
+  <meta name="author" content="" />
+
+  <title>UnfazedRoads</title>
+
+  <!-- Bootstrap core CSS -->
+  <link rel="stylesheet" type="text/css" href="css/bootstrap.css" />
+  <!-- Fonts Style -->
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap" rel="stylesheet">
+  <!-- Font Awesome Style -->
+  <link href="css/font-awesome.min.css" rel="stylesheet" />
+  <!-- Custom styles for this template -->
+  <link href="css/style.css" rel="stylesheet" />
+  <!-- Responsive Style -->
+  <link href="css/responsive.css" rel="stylesheet" />
+</head>
+
+<body class="sub_page">
+
+  <div class="hero_area">
+    <!-- Header Section Starts -->
+    <header class="header_section">
+      <div class="container-fluid">
+        <nav class="navbar navbar-expand-lg custom_nav-container">
+          <a class="navbar-brand" href="/">
+            <span>UnfazedRoads</span>
+          </a>
+
+          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class=""></span>
+          </button>
+
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav">
+              <li class="nav-item">
+                <a class="nav-link" href="index.html">Home <span class="sr-only">(current)</span></a>
+              </li>
+              <li class="nav-item active">
+                <a class="nav-link" href="#">Report</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="about.html">About Us</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="contact.html">Contact Us</a>
+              </li>
+            </ul>
+            <div class="user_optio_box">
+              <a href="">
+                <i class="fa fa-user" aria-hidden="true"></i>
+              </a>
+            </div>
+          </div>
+        </nav>
+      </div>
+    </header>
+    <!-- End Header Section -->
+  </div>
+
+  <div class="container mt-5">
+    <h3 align="center">Pothole Reporting Form</h3>
+
+    <!-- Flash Messages Section -->
+    <div id="message" class="alert" style="display: none;"></div>
+
+    <form id="reportForm" method="POST" enctype="multipart/form-data" style="max-width: 600px; margin: auto;">
+      <!-- Photo Upload -->
+      <div class="form-group">
+        <label for="photo">Upload Pothole Image (JPG only)</label>
+        <input type="file" class="form-control" name="photo" id="photo" required accept=".jpg">
+      </div>
+
+      <!-- Pin Code -->
+      <div class="form-group">
+        <label for="pincode">Pin Code</label>
+        <input type="text" class="form-control" name="Pin_Code" id="pincode" maxlength="6" pattern="\d{6}" required>
+      </div>
+
+      <!-- Latitude -->
+      <div class="form-group">
+        <label for="latitude">Latitude</label>
+        <input type="text" class="form-control" id="latitude" name="latitude" placeholder="Latitude" required>
+      </div>
+
+      <!-- Longitude -->
+      <div class="form-group">
+        <label for="longitude">Longitude</label>
+        <input type="text" class="form-control" id="longitude" name="longitude" placeholder="Longitude" required>
+      </div>
+
+      <!-- Button to Get Current Location -->
+      <div class="form-group text-center">
+        <button type="button" class="btn btn-info" onclick="getLocation()">Add Current Location</button>
+      </div>
+
+      <!-- Submit and Reset Buttons -->
+      <div class="form-group text-center">
+        <button type="submit" class="btn btn-primary">Submit</button>
+        <button type="reset" class="btn btn-secondary">Reset</button>
+      </div>
+    </form>
+
+    <!-- JavaScript for Form Submission and Location Fetching -->
+    <script>
+      document.getElementById('reportForm').addEventListener('submit', function(event) {
+        event.preventDefault(); // Prevent the default form submission
+
+        const formData = new FormData(this); // Create a FormData object
+
+        fetch('http://127.0.0.1:5000/register', {
+          method: 'POST',
+          body: formData,
+        })
+        .then(response => response.json())
+        .then(data => {
+          // Check if the submission was successful
+          if (data.success) {
+            // showMessage('Pothole report submitted successfully!', 'alert-success');
+            sessionStorage.setItem('flashMessage', 'Pothole report submitted successfully!'); // Store message
+            sessionStorage.setItem('flashClass', 'alert-success'); // Store class
+            // document.getElementById('reportForm').reset(); // Reset the form
+          } else {
+            showMessage(data.message, 'alert-danger');
+            sessionStorage.setItem('flashMessage', data.message); // Store error message
+            sessionStorage.setItem('flashClass', 'alert-danger'); // Store error class
+          }
+        })
+        .catch((error) => {
+          console.error('Error:', error);
+          showMessage('An error occurred. Please try again.', 'alert-danger');
+          sessionStorage.setItem('flashMessage', 'An error occurred. Please try again.'); // Store error message
+          sessionStorage.setItem('flashClass', 'alert-danger'); // Store error class
+        });
+      });
+
+      function showMessage(message, alertClass) {
+        const messageDiv = document.getElementById('message');
+        messageDiv.className = `alert ${alertClass}`; // Set the alert class
+        messageDiv.innerText = message; // Set the message text
+        messageDiv.style.display = 'block'; // Show the message
+
+        // Automatically hide the message after a longer duration
+        setTimeout(() => {
+          messageDiv.style.display = 'none'; // Hide the message
+        }, 100000); // Change this value to 10000ms (10 seconds)
+      }
+
+      // Check for a flash message on page load
+      window.onload = function() {
+        const flashMessage = sessionStorage.getItem('flashMessage');
+        const flashClass = sessionStorage.getItem('flashClass');
+        if (flashMessage && flashClass) {
+          showMessage(flashMessage, flashClass);
+          sessionStorage.removeItem('flashMessage'); // Clear message after displaying
+          sessionStorage.removeItem('flashClass'); // Clear class after displaying
+        }
+      }
+
+      function getLocation() {
+        if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(
+            function (position) {
+              document.getElementById('latitude').value = position.coords.latitude;
+              document.getElementById('longitude').value = position.coords.longitude;
+            },
+            function (error) {
+              if (error.code === error.PERMISSION_DENIED) {
+                alert("Location permission denied. Please enter latitude and longitude manually.");
+              }
+            }
+          );
+        } else {
+          alert("Geolocation is not supported by this browser.");
+        }
+      }
+    </script>
+  </div>
+
+  <!-- Info Section -->
+  <section class="info_section layout_padding2">
+    <div class="container">
+      <div class="info_logo">
+        <h2>UnfazedRoads</h2>
+      </div>
+      <div class="row">
+        <div class="col-md-3">
+          <div class="info_contact">
+            <h5>About</h5>
+            <div>
+              <div class="img-box">
+                <img src="images/location-white.png" width="18px" alt="">
+              </div>
+              <p>Address</p>
+            </div>
+            <div>
+              <div class="img-box">
+                <img src="images/telephone-white.png" width="12px" alt="">
+              </div>
+              <p>+01 1234567890</p>
+            </div>
+            <div>
+              <div class="img-box">
+                <img src="images/envelope-white.png" width="18px" alt="">
+              </div>
+              <p>vit@gmail.com</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="info_info">
+            <h5>Informations</h5>
+            <p>ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt</p>
+          </div>
+        </div>
+
+        <div class="col-md-3">
+          <div class="info_insta">
+            <h5>Instagram</h5>
+            <p>ipsum dolor sit amet, consectetur adipiscing elit</p>
+          </div>
+        </div>
+
+        <div class="col-md-3">
+          <div class="info_form">
+            <h5>Newsletter</h5>
+            <form action="">
+              <input type="email" placeholder="Enter your email">
+              <button>Subscribe</button>
+            </form>
+            <div class="social_box">
+              <a href="">
+                <img src="images/fb.png" alt="">
+              </a>
+              <a href="">
+                <img src="images/twitter.png" alt="">
+              </a>
+              <a href="">
+                <img src="images/linkedin.png" alt="">
+              </a>
+              <a href="">
+                <img src="images/youtube.png" alt="">
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- End Info Section -->
+
+  <!-- Footer Section -->
+  <section class="footer_section">
+    <div class="container">
+      <p>
+        &copy; <span id="displayYear"></span> All Rights Reserved By
+        <a href="https://html.design/">UnfazedRoads</a>
+      </p>
+    </div>
+  </section>
+  <!-- End Footer Section -->
+
+  <!-- jQuery -->
+  <script type="text/javascript" src="js/jquery-3.4.1.min.js"></script>
+  <!-- Popper JS -->
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+  <!-- Bootstrap JS -->
+  <script type="text/javascript" src="js/bootstrap.js"></script>
+  <!-- Custom JS -->
+  <script type="text/javascript" src="js/custom.js"></script>
+</body>
+
+</html>

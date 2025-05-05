@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <!-- Basic -->
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <!-- Mobile Metas -->
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+  <title>Pothole Tracker - Potholes</title>
+
+  <!-- Bootstrap core CSS -->
+  <link rel="stylesheet" type="text/css" href="css/bootstrap.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap" rel="stylesheet">
+  <link href="css/font-awesome.min.css" rel="stylesheet" />
+  <link href="css/style.css" rel="stylesheet" />
+  <link href="css/responsive.css" rel="stylesheet" />
+  
+  <!-- Bing Maps API -->
+  <script src="https://www.bing.com/api/maps/mapcontrol?callback=GetMap&key=AsrjR4cohBtswaWTB5cof9oIKl4sR5TkRH3WO6z5w7p06YvqswHPsLgTh9PEOks3" async defer></script>
+  
+  <!-- <script>
+    let map;
+
+    function GetMap() {
+      // Create a map object
+      map = new Microsoft.Maps.Map(document.getElementById('bingMap'), {
+        credentials: 'AsrjR4cohBtswaWTB5cof9oIKl4sR5TkRH3WO6z5w7p06YvqswHPsLgTh9PEOks3',
+        center: new Microsoft.Maps.Location(18.456834783210216, 73.8713535503657),
+        zoom: 12
+      });
+
+      // Fetch the coordinates from the server
+      fetch('http://127.0.0.1:5000/get-coordinates')
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Network response was not ok ' + response.statusText);
+          }
+          return response.json();
+        })
+        .then(data => {
+          console.log(data); // Log the data for debugging
+          data.forEach(coord => {
+            // Create a custom pushpin with a custom icon
+            const pushpin = new Microsoft.Maps.Pushpin(
+              new Microsoft.Maps.Location(coord.Latitude, coord.Longitude),
+              {
+                icon: 'custom-pushpin.png', // Specify the custom icon URL here
+                anchor: new Microsoft.Maps.Point(3, 10) // Adjust anchor point for the custom icon
+              }
+            );
+            map.entities.push(pushpin); // Add pushpin to map
+          });
+        })
+        .catch(error => console.error('Error fetching coordinates:', error));
+    }
+
+  </script> -->
+
+
+  <script>
+    let map;
+  
+    function GetMap() {
+      // Create a map object
+      map = new Microsoft.Maps.Map(document.getElementById('bingMap'), {
+        credentials: 'AsrjR4cohBtswaWTB5cof9oIKl4sR5TkRH3WO6z5w7p06YvqswHPsLgTh9PEOks3',
+        center: new Microsoft.Maps.Location(18.456834783210216, 73.8713535503657),
+        zoom: 12
+      });
+  
+      // Fetch the coordinates from the server
+      fetch('http://127.0.0.1:5000/get-coordinates')
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Network response was not ok ' + response.statusText);
+          }
+          return response.json();
+        })
+        .then(data => {
+          console.log(data); // Log the data for debugging
+          data.forEach(coord => {
+            // Create a default pushpin
+            const pushpin = new Microsoft.Maps.Pushpin(
+              new Microsoft.Maps.Location(coord.Latitude, coord.Longitude)
+            );
+            map.entities.push(pushpin); // Add pushpin to map
+          });
+        })
+        .catch(error => console.error('Error fetching coordinates:', error));
+    }
+  </script>
+  
+</head>
+
+<body class="sub_page" onload="GetMap()">
+  <div class="hero_area">
+    <header class="header_section">
+      <div class="container-fluid">
+        <nav class="navbar navbar-expand-lg custom_nav-container ">
+          <a class="navbar-brand" href="home.html">
+            <span>POTHOLE TRACKER</span>
+          </a>
+          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class=""> </span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav ">
+              <li class="nav-item ">
+                <a class="nav-link" href="Home.html">Home <span class="sr-only">(current)</span></a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="report.html"> Report</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="about.html">About Us</a>
+              </li>
+              <li class="nav-item active">
+                <a class="nav-link" href="contact.html">Find Potholes</a>
+              </li>
+            </ul>
+            <div class="user_optio_box">
+              <a href="">
+                <i class="fa fa-user" aria-hidden="true"></i>
+              </a>
+            </div>
+          </div>
+        </nav>
+      </div>
+    </header>
+  </div>
+
+  <!-- Map Section -->
+  <section class="map_section layout_padding">
+    <div class="container">
+      <div class="map" id="bingMap" style="height: 600px;"></div>
+    </div>
+  </section>
+  <!-- info section -->
+  <section class="info_section layout_padding2">
+    <div class="container">
+      <div class="info_logo">
+        <h2>
+          POTHOLE TRACKER
+        </h2>
+      </div>
+      <div class="row">
+
+        <div class="col-md-3">
+          <div class="info_contact">
+            <h5>
+              About 
+            </h5>
+            <div>
+              <div class="img-box">
+                <img src="images/location-white.png" width="18px" alt="">
+              </div>
+              <p>
+                Address
+              </p>
+            </div>
+            <div>
+              <div class="img-box">
+                <img src="images/telephone-white.png" width="12px" alt="">
+              </div>
+              <p>
+                +01 1234567890
+              </p>
+            </div>
+            <div>
+              <div class="img-box">
+                <img src="images/envelope-white.png" width="18px" alt="">
+              </div>
+              <p>
+                vit@gmail.com
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="info_info">
+            <h5>
+              Informations
+            </h5>
+            <p>
+              ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt
+            </p>
+          </div>
+        </div>
+
+        <div class="col-md-3">
+          <div class="info_insta">
+            <h5>
+              Instagram
+            </h5>
+            <p>
+              ipsum dolor sit amet, consectetur adipiscing eli
+            </p>
+          </div>
+        </div>
+
+        <div class="col-md-3">
+          <div class="info_form ">
+            <h5>
+              Newsletter
+            </h5>
+            <form action="">
+              <input type="email" placeholder="Enter your email">
+              <button>
+                Subscribe
+              </button>
+            </form>
+            <div class="social_box">
+              <a href="">
+                <img src="images/fb.png" alt="">
+              </a>
+              <a href="">
+                <img src="images/twitter.png" alt="">
+              </a>
+              <a href="">
+                <img src="images/linkedin.png" alt="">
+              </a>
+              <a href="">
+                <img src="images/youtube.png" alt="">
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- end info_section -->
+
+  <!-- Footer Section -->
+  <section class="footer_section">
+    <div class="container">
+      <p>&copy; <span id="displayYear"></span> All Rights Reserved By <a href="https://html.design/">POTHOLE TRACKER</a></p>
+    </div>
+  </section>
+
+  <!-- jQuery -->
+  <script src="js/jquery-3.6.0.min.js"></script>
+  <script src="js/bootstrap.js"></script>
+  <script src="js/custom.js"></script>
+  <script>
+    document.getElementById("displayYear").innerHTML = new Date().getFullYear();
+  </script>
+</body>
+</html>

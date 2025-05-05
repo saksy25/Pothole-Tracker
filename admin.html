@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+  <title>Pothole Tracker - Reports</title>
+
+  <!-- Bootstrap core CSS -->
+  <link rel="stylesheet" type="text/css" href="css/bootstrap.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap" rel="stylesheet">
+  <link href="css/font-awesome.min.css" rel="stylesheet" />
+  <link href="css/style.css" rel="stylesheet" />
+  <link href="css/responsive.css" rel="stylesheet" />
+</head>
+
+<body>
+  <div class="hero_area">
+    <!-- header section -->
+    <header class="header_section">
+      <div class="container-fluid">
+        <nav class="navbar navbar-expand-lg custom_nav-container">
+          <a class="navbar-brand" href="index.html">
+            <span>POTHOLE TRACKER</span>
+          </a>
+          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent">
+            <span class=""></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav">
+              <li class="nav-item">
+                <a class="nav-link" href="AdminHome.html">Home</a>
+              </li>
+              <li class="nav-item active">
+                <a class="nav-link" href="admin.html">Reports</a>
+              </li>
+            </ul>
+          </div>
+        </nav>
+      </div>
+    </header>
+
+    <!-- Admin Section -->
+    <section class="layout_padding">
+      <div class="container">
+        <div class="heading_container">
+          <h2>Reported Potholes</h2>
+        </div>
+        <div class="table-responsive">
+          <table class="table table-bordered" id="reportsTable">
+            <thead class="thead-dark">
+              <tr>
+                <th>ID</th>
+                <!-- Removed Location Column -->
+                <th>Date Reported</th>
+                <th>Status</th>
+                <th>Image</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- Dynamic content will be inserted here -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- Info Section -->
+  <section class="info_section layout_padding2">
+    <div class="container">
+      <div class="info_logo">
+        <h2>POTHOLE TRACKER</h2>
+      </div>
+      <div class="row">
+        <!-- Info Section Content -->
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer Section -->
+  <section class="footer_section">
+    <div class="container">
+      <p>&copy; <span id="displayYear"></span> All Rights Reserved By POTHOLE TRACKER</p>
+    </div>
+  </section>
+
+  <!-- jQuery and Bootstrap Scripts -->
+  <script type="text/javascript" src="js/jquery-3.4.1.min.js"></script>
+  <script type="text/javascript" src="js/bootstrap.js"></script>
+
+  <!-- Script to Fetch Reports and Populate Table -->
+  <script>
+    $(document).ready(function () {
+      // Fetch reports when the page loads
+      fetchReports();
+
+      function fetchReports() {
+        $.ajax({
+          url: 'http://127.0.0.1:5000/get-reports',
+          method: 'GET',
+          success: function (data) {
+            populateReportsTable(data);
+          },
+          error: function (err) {
+            console.error('Error fetching reports:', err);
+          }
+        });
+      }
+
+      function populateReportsTable(reports) {
+        const tbody = $('#reportsTable tbody');
+        tbody.empty(); // Clear existing rows
+
+        reports.forEach((report, index) => {
+          const row = `
+            <tr>
+                <td>${index + 1}</td>
+                <!-- Removed Location Column -->
+                <td>${report['Timestamp']}</td>
+                <td>
+                    <select class="status-dropdown" data-index="${index}">
+                        <option value="Pending" ${report.Status === 'Pending' ? 'selected' : 'selected'}>Pending</option>
+                        <option value="In Progress" ${report.Status === 'In Progress' ? 'selected' : ''}>In Progress</option>
+                        <option value="Completed" ${report.Status === 'Completed' ? 'selected' : ''}>Completed</option>
+                    </select>
+                </td>
+                <td><img src="${report['Image Path']}" alt="Pothole Image" style="width: 100px; height: auto;"></td>
+            </tr>
+          `;
+          tbody.append(row);
+        });
+
+        // Attach change event handler to dropdowns
+        $('.status-dropdown').change(function () {
+          const newStatus = $(this).val();
+          const reportIndex = $(this).data('index');
+          updateReportStatus(reportIndex, newStatus);
+        });
+      }
+
+      function updateReportStatus(index, newStatus) {
+        $.ajax({
+          url: 'http://127.0.0.1:5000/update-status',
+          method: 'POST',
+          contentType: 'application/json',
+          data: JSON.stringify({ index: index, status: newStatus }),
+          success: function (response) {
+            console.log(response.message);
+          },
+          error: function (err) {
+            console.error('Error updating status:', err);
+          }
+        });
+      }
+    });
+  </script>
+</body>
+
+</html>

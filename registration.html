@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pothole Tracker - Registration</title>
+
+  <link href="indexstyle.css" rel="stylesheet">
+  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" 
+        rel="stylesheet" 
+        integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" 
+        crossorigin="anonymous">
+</head>
+
+<body>
+<div class="box-form">
+  <!-- Right Section -->
+  <div class="right">
+    <h5 style="color: rgba(104, 43, 226, 0.923);">Register</h5>
+    <p>Already have an account? <a href="index.html">Login</a></p>
+
+    <form id="registrationForm">
+      <div class="inputs">
+        <input type="text" name="firstName" placeholder="First Name" required pattern="[a-zA-Z\s]+" />
+        <input type="text" name="lastName" placeholder="Last Name" required pattern="[a-zA-Z\s]+" />
+        <input type="email" name="email" placeholder="Email" required />
+        <input type="tel" name="phone" placeholder="Phone Number" pattern="\d{10}" required />
+        <input type="text" name="username" placeholder="Username" required />
+        <input type="password" name="password" placeholder="Password" required />
+      </div>
+
+      <br>
+      <button type="button" id="registerButton">Register</button>
+    </form>
+  </div>
+</div>
+
+<!-- JavaScript for Registration -->
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const registerForm = document.getElementById('registrationForm');
+    const registerButton = document.getElementById('registerButton');
+
+    // Register Button Event Listener
+    registerButton.addEventListener('click', function () {
+      const formData = new FormData(registerForm);
+
+      // Send the form data to the server
+      fetch('http://127.0.0.1:5000/register', {
+        method: 'POST',
+        body: formData,
+      })
+      .then(response => response.json())
+      .then(data => {
+        console.log(data); // Log the response data
+        if (data.success) {
+          alert(data.message); // Show success message
+          window.location.href = "index.html"; // Redirect to login page
+
+                // Redirect to admin page
+      window.location.href = "admin.html"; // Redirect to admin page directly
+        } else {
+          alert(data.message); // Show error message
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        alert("An error occurred. Please try again."); // Show error alert
+      });
+    });
+  });
+</script>
+</body>
+</html>
