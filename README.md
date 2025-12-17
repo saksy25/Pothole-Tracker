@@ -13,7 +13,7 @@ The Pothole Tracker is a web application that allows citizens to report potholes
 
 ## Technology Stack
 
-**Frontend**: HTML, CSS, Bootstrap, JavaScript, React.js  
+**Frontend**: HTML, CSS, Bootstrap, JavaScript 
 **Backend**: Python, Flask  
 **Maps API**: Google Maps API
 
@@ -26,4 +26,5 @@ The Pothole Tracker is a web application that allows citizens to report potholes
   - Fill in the details and upload an image
   - Submit the report
   - Track the status of your reported potholes in the dashboard
+
 
